@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# record screencast
+#
+# using ffmpeg
+
+# mein laptop monitor: 1366x768
+# beamer revamp: 1024x768
+
+WIDTH=1024
+HEIGHT=768
+
+FPS=16
+
+DATE=$(date +%Y-%m-%d_%k%M)
+
+ffmpeg -f alsa -ac 2 -i pulse \
+    -f x11grab -r "$FPS" -s "$WIDTH"x"$HEIGHT" -i :7.0 \
+    -acodec pcm_s16le \
+    -vcodec libx264 -preset ultrafast -crf 0 \
+    -threads 0 \
+    rec_"$DATE".mkv

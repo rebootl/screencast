@@ -1,0 +1,71 @@
+
+# play webcam
+
+    $ mplayer -vo xv tv:// \
+              -tv driver=v4l2:width=180:height=120:fps=30:device=/dev/video0 \
+              -geometry "95%:95%" -noborder -ontop
+
+# record
+
+    $ ffmpeg -f alsa -ac 2 -i pulse \
+        -f x11grab -r 30 -s 1366x768 \
+        -i :0.0 -acodec pcm_s16le \
+        -vcodec libx264 -preset ultrafast -crf 0 \
+        -threads 0 output.mkv
+
+
+# encode
+#
+# from: http://ubuntuforums.org/showthread.php?t=1392026
+#
+# h.264 (high quality)
+
+    $ ffmpeg -i output.mkv -acodec libfaac \
+        -ab 128k -ac 2 -vcodec libx264 -preset slow -crf 22 \
+        -threads 0 \
+        our-final-product.mp4 
+
+# xvid/mp3
+
+    $ ffmpeg -i output.mkv -acodec libmp3lame -ab 128k -ac 2 \
+        -vcodec libxvid -qscale 8 -me_method full -mbd rd \
+        -flags +gmc+qpel+mv4 -trellis 1 \
+        -threads 0 \
+        our-final-product.avi 
+
+# from: https://trac.ffmpeg.org/wiki/Encode/MPEG-4
+
+#
+
+ffmpeg -i input.avi -c:v libxvid output.avi
+
+ffmpeg -i input.avi -c:v mpeg4 -vtag xvid output.avi
+
+ffmpeg -i input.avi -c:v mpeg4 -vtag xvid -qscale:v 3 -c:a libmp3lame -qscale:a 4 output.avi
+
+
+# adapted
+
+    $ ffmpeg -i input.avi -c:v libxvid -qscale:v 3 -c:a libmp3lame -qscale:a 4 output.avi
+
+
+# last try: reduce framerate drastically
+
+    $ ffmpeg -i input.avi -c:a copy -vf fps=fps=1 output.avi
+
+# using webm ("royalty free")
+
+    $ ffmpeg -i input.mp4 \
+        -c:v libvpx -crf 10 -b:v 1M \
+        -c:a libvorbis \
+        output.webm
+
+# optimierungsversuch für LTSP
+
+    $ ffmpeg -i input.mp4 \
+        -c:v libvpx -crf 10 -b:v 1M \
+        -vf scale=640:480 \
+        -pix_fmt yuv420p \
+        -c:a libvorbis \
+        output.webm
+

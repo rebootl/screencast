@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# encode video (high quality)
+#
+# $1 video
+
+FILENAME_NOEXT="${1%.*}"
+
+ffmpeg -i "$1" \
+        -c:v libvpx -crf 10 -b:v 1M \
+        -c:a libvorbis \
+        "$FILENAME_NOEXT".webm

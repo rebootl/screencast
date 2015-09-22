@@ -1,0 +1,14 @@
+#!/bin/bash
+#
+# encode video (optimized for LTSP)
+#
+# $1 video
+
+FILENAME_NOEXT="${1%.*}"
+
+ffmpeg -i "$1" \
+        -c:v libvpx -crf 10 -b:v 1M \
+        -vf scale=640:480 \
+        -pix_fmt yuv420p \
+        -c:a libvorbis \
+        "$FILENAME_NOEXT"_LTSP-opt.webm

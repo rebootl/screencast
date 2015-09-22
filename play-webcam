@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# play webcam
+
+WIDTH=180
+HEIGHT=120
+
+mplayer -vo xv \
+    tv:// \
+    -tv driver=v4l2:width=$WIDTH:height=$HEIGHT:fps=30:device=/dev/video0 \
+    -geometry "95%:95%" \
+    -noborder -ontop > /dev/null 2>&1 &
